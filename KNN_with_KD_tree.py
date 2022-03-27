@@ -100,12 +100,13 @@ class KNN:
 
     def nearest_point_detect(self,valueNode):
         nearest_point = self.euclidien_distance(self.root_node, valueNode)
-        print(nearest_point)
+        #print(nearest_point)
         root = self.root_node
         while(1):
             temp_root = root
             if(root == None):
                 break
+            left_distance = 999999
             if(root.left != None):
                 left_distance = self.euclidien_distance(root.left, valueNode)
                 if(left_distance < nearest_point):
@@ -113,8 +114,9 @@ class KNN:
                     temp_root = root.left
                     
                     
-                    
+            right_distance = 999999       
             if(root.right != None):
+                
                 right_distance = self.euclidien_distance(root.right, valueNode)
                 if(right_distance <= nearest_point):
                     nearest_point = right_distance
@@ -127,11 +129,17 @@ class KNN:
                     root = root.left
                     #print(root.ls)
                     self.k_nearest_points.append([left_distance,root])
+                    #check if it is leaf or not
+                    if(root.left == None and root.right == None):
+                        break
                     #heapq.heappush(self.nearest_points, (nearest_point,root))
                     continue
                 else:
                     root = root.right
                     self.k_nearest_points.append([right_distance,root])
+                    #check if it is the leaf or not
+                    if(root.left == None and root.right == None):
+                        break
                     #heapq.heappush(self.nearest_points, (nearest_point,root))
                     continue
                 break
@@ -158,24 +166,24 @@ class KNN:
         #this class will give the k nearest 
         min_kk= len(self.k_nearest_points)
         print(min_kk)
-        #kk = self.k
-        #kk=min(min_kk,kk)
+        kk = self.k
+        kk=min(min_kk,kk)
         class_counter = [0] * self.no_of_class
-        for i in range(0,min_kk):
+        for i in range(0,kk):
             print(i)
             dis = self.k_nearest_points[i][0]
             nodenew = self.k_nearest_points[i][1]
-            #class_counter[nodenew.class_value] = class_counter[nodenew.class_value] +1
+            class_counter[nodenew.class_value] = class_counter[nodenew.class_value] +1
              
             print("Distance : ",dis)
-            #print("node : ",nodenew.ls)
-            '''print("class : ",nodenew.class_value)
+            print("node : ",nodenew.ls)
+            print("class : ",nodenew.class_value)
         
         max_val = max(class_counter)
         selected_class = class_counter.index(max_val) #as has the maximum count
         print("max_count :", max_val)
         
-        return selected_class'''
+        return selected_class
             
     
                     
@@ -184,7 +192,7 @@ class KNN:
     
 
 #points = [(12,15,1),(5,6,0),(21,24,0),(2,3,0),(13,6,1),(10,9,1),(1,2,1),(14,29,0),(15,10,1)]
-points = [(2,3,1),(5,4,0),(9,6,1),(4,7,1),(8,1,1),(7,2,0)]
+points = [(2,3,1),(5,4,1),(9,6,1),(4,7,1),(8,1,1),(7,2,0)]
 model = KNN(k=3,no_of_class=2)
 model.fit(points)
 node3 = Node(4,3)
