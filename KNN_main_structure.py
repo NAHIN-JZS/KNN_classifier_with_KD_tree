@@ -12,9 +12,9 @@ import math
 #root_node = None
 
 class Node:
-    def __init__(self,x_val,y_val,class_value=None,parent=None):
+    def __init__(self,data_points,class_value=None,parent=None):
         self.root = parent
-        self.ls = [x_val,y_val]
+        self.ls = data_points
         self.class_value = class_value
         self.right = None
         self.left = None
@@ -29,14 +29,16 @@ class KNN:
         self.KD_tree = None
         self.nearest_points=[]
         self.k_nearest_points = []
+        self.dimention = 2
         
         
    #------------------model training ended---------------         
         
-    def create_KD_tree(self,root,depth, x_value = None, y_value = None,class_value=None, dimention = 2):
-        
-        
-        newNode = Node(parent=root,x_val= x_value,y_val= y_value,class_value=class_value)
+    #def create_KD_tree(self,root, x_value = None, y_value = None,class_value=None):
+    def create_KD_tree(self,root, data_values,class_value=None):
+         
+        dimention = self.dimention
+        newNode = Node(parent=root,data_points = data_values,class_value=class_value)
         
         #Check if there exixts any node or not. if not then assign the new node as root node
         if ( self.root_node == None):
@@ -76,8 +78,14 @@ class KNN:
     
     def fit(self,data_points):
         #total_points = len(data_points)
-        for x,y,z in data_points:
-            self.KD_tree = self.create_KD_tree(self.KD_tree,0,x,y,z)
+        dim = len(data_points[0]) -1
+        self.dimention = dim
+       # print("dim", dim)
+        #for x,y,z in data_points:
+        #    self.KD_tree = self.create_KD_tree(self.KD_tree,x,y,z)
+            
+        for data,z in data_points:
+            self.KD_tree = self.create_KD_tree(self.KD_tree,data,z)
         print("Model fitted")
 
 #----------------------model training portion ended-----------------------------
@@ -165,7 +173,7 @@ class KNN:
         
         #this class will give the k nearest 
         min_kk= len(self.k_nearest_points)
-        print(min_kk)
+        print("maximunm neighbour can be considered ", min_kk)
         kk = self.k
         kk=min(min_kk,kk)
         class_counter = [0] * self.no_of_class
@@ -191,11 +199,11 @@ class KNN:
         
     
 
-#points = [(12,15,1),(5,6,0),(21,24,0),(2,3,0),(13,6,1),(10,9,1),(1,2,1),(14,29,0),(15,10,1)]
-points = [(2,3,1),(5,4,1),(9,6,1),(4,7,1),(8,1,1),(7,2,0)]
+points = [([12,15],1),([5,6],0),([21,24],0),([2,3],0),([13,6],1),([10,9],1),([1,2],1),([14,29],0),([15,10],1)]
+#points = [([2,3],1),([5,4],1),([9,6],1),([4,7],1),([8,1],1),([7,2],0)]
 model = KNN(k=3,no_of_class=2)
 model.fit(points)
-node3 = Node(4,3)
+node3 = Node([10,20])
 model.predict(node3)
 
 #euclidien_distance((12,15), ())
